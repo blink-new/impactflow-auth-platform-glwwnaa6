@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { AuthPage } from '@/components/auth/AuthPage'
 import DashboardLayout from '@/components/DashboardLayout'
+import Dashboard from '@/components/Dashboard'
+import FundBridge from '@/components/FundBridge'
 import type { User } from '@supabase/supabase-js'
 
 function App() {
@@ -30,10 +33,6 @@ function App() {
     // User state will be updated by the auth state change listener
   }
 
-  const handleLogout = () => {
-    setUser(null)
-  }
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center">
@@ -46,13 +45,44 @@ function App() {
   }
 
   return (
-    <>
-      {user ? (
-        <DashboardLayout />
-      ) : (
-        <AuthPage onAuthSuccess={handleAuthSuccess} />
-      )}
-    </>
+    <Router>
+      <Routes>
+        <Route 
+          path="/auth" 
+          element={
+            user ? <Navigate to="/dashboard" replace /> : <AuthPage onAuthSuccess={handleAuthSuccess} />
+          } 
+        />
+        <Route 
+          path="/dashboard" 
+          element={
+            user ? (
+              <DashboardLayout>
+                <Dashboard />
+              </DashboardLayout>
+            ) : (
+              <Navigate to="/auth" replace />
+            )
+          } 
+        />
+        <Route 
+          path="/fundbridge" 
+          element={
+            user ? (
+              <DashboardLayout>
+                <FundBridge />
+              </DashboardLayout>
+            ) : (
+              <Navigate to="/auth" replace />
+            )
+          } 
+        />
+        <Route 
+          path="/" 
+          element={<Navigate to={user ? "/dashboard" : "/auth"} replace />} 
+        />
+      </Routes>
+    </Router>
   )
 }
 
