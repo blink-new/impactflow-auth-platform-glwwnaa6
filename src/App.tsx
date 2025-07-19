@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { AuthPage } from '@/components/auth/AuthPage'
-import { Dashboard } from '@/components/Dashboard'
+import DashboardLayout from '@/components/DashboardLayout'
 import type { User } from '@supabase/supabase-js'
 
 function App() {
@@ -48,7 +48,7 @@ function App() {
   return (
     <>
       {user ? (
-        <Dashboard onLogout={handleLogout} />
+        <DashboardLayout />
       ) : (
         <AuthPage onAuthSuccess={handleAuthSuccess} />
       )}
